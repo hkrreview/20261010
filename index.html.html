@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>다이어트 주사 기록장</title>
+<style>
+:root{--bg:#f6f7f4;--card:#fff;--tx:#1d2a26;--sub:#6b7a74;--pri:#2f8f6b;--pri2:#e3f3ec;--bd:#e2e7e3;--warn:#d9534f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181a;--card:#1b2427;--tx:#e8efec;--sub:#93a39c;--pri:#4fc197;--pri2:#1f3a30;--bd:#2c3a3d;--warn:#ff7b73}}
+:root[data-theme="dark"]{--bg:#12181a;--card:#1b2427;--tx:#e8efec;--sub:#93a39c;--pri:#4fc197;--pri2:#1f3a30;--bd:#2c3a3d;--warn:#ff7b73}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 2px}h2{font-size:16px;margin:0 0 12px}
+.sub{color:var(--sub);font-size:13px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--pri2);border-radius:12px;padding:12px}
+.stat b{display:block;font-size:22px}.stat span{font-size:12px;color:var(--sub)}
+label{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--bd);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;user-select:none;background:var(--bg)}
+.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+button{font:inherit;cursor:pointer}
+.btn{width:100%;margin-top:14px;padding:12px;border:0;border-radius:10px;background:var(--pri);color:#fff;font-weight:600}
+.ghost{background:none;border:0;color:var(--warn);font-size:12px}
+.item{border-top:1px solid var(--bd);padding:12px 0}.item:first-child{border-top:0}
+.tag{display:inline-block;font-size:12px;background:var(--pri2);border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0}
+.tag.se{background:rgba(217,83,79,.15);color:var(--warn)}
+.scroll{overflow-x:auto}
+.note{font-size:12px;color:var(--sub);text-align:center;margin:20px 0}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tab{flex:1;padding:9px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-weight:600}.tab.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.tabs .tab{font-size:13px;padding:9px 2px}
+.nav{overflow-x:auto;scrollbar-width:none}.nav .tab{flex:0 0 auto;padding:9px 14px;white-space:nowrap}
+.lk{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;margin-top:8px;border:1px solid var(--bd);border-radius:10px;color:var(--tx);text-decoration:none;font-size:14px;background:var(--bg)}.lk span{color:var(--sub);font-size:12px;white-space:nowrap}
+details{border-top:1px solid var(--bd);padding:10px 0;font-size:14px}details summary{cursor:pointer;font-weight:600}details p{margin:8px 0 0;color:var(--sub)}
+.post{border-top:1px solid var(--bd);padding:14px 0}.post:first-child{border-top:0}.post h3{margin:6px 0 4px;font-size:15px}
+.cm{background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13px}.lnk{background:none;border:0;color:var(--pri);font-size:13px;padding:6px 0}
+.info h3{font-size:14px;margin:14px 0 4px}.info ul{margin:0;padding-left:18px;font-size:14px}.info p{margin:0;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:420px}th,td{border-bottom:1px solid var(--bd);padding:8px;text-align:left;vertical-align:top}th{color:var(--sub);font-weight:600}
+.warnbox{background:rgba(217,83,79,.12);border-radius:10px;padding:10px 12px;font-size:13px;margin-top:12px}
+#landing{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 40px);padding:20px}
+#landing[hidden]{display:none}
+.lbox{width:100%;max-width:420px;background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:28px 22px;text-align:center}
+.lbox label{text-align:left}.logo{font-size:44px}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dcard{border:2px solid var(--bd);border-radius:14px;padding:16px 8px;cursor:pointer;background:var(--bg)}
+.dcard b{display:block;font-size:17px}.dcard span{font-size:12px;color:var(--sub)}
+.dcard.on{border-color:var(--pri);background:var(--pri2)}
+.fig{margin:0;text-align:center}.fig img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:var(--bg)}.fig figcaption{font-size:13px;margin-top:4px}
+.thumb{width:44px;height:58px;object-fit:cover;border-radius:8px}#wprev{max-width:140px;border-radius:10px;margin-top:8px}
+input[type=range]{padding:0;border:0;margin-top:10px}
+</style>
+</head>
+<body>
+<section id="landing">
+<div class="lbox">
+<div class="logo">💉</div>
+<h1>다이어트 주사 기록장</h1>
+<p class="sub">위고비 · 마운자로 몸무게와 부작용을 기록하세요</p>
+<label>닉네임</label>
+<input id="nick" maxlength="12" placeholder="사용할 닉네임을 입력하세요" autocomplete="off">
+<label>투약 중인 주사</label>
+<div class="dgrid">
+<div class="dcard" data-d="위고비" onclick="pickDrug('위고비')"><b>위고비</b><span>세마글루타이드</span></div>
+<div class="dcard" data-d="마운자로" onclick="pickDrug('마운자로')"><b>마운자로</b><span>티르제파타이드</span></div>
+</div>
+<button class="btn" onclick="enter()">ENTER</button>
+<p class="sub" style="margin:14px 0 0">기록은 이 기기의 브라우저에만 저장됩니다.</p>
+</div>
+</section>
+
+<main id="app" hidden>
+<div style="display:flex;justify-content:space-between;align-items:flex-start">
+<div><h1 id="hello">💉 기록장</h1><div class="sub" id="hsub"></div></div>
+<button class="ghost" style="color:var(--sub);font-size:13px" onclick="logout()">나가기</button>
+</div>
+<div class="tabs nav" style="margin:14px 0 0"><button class="tab on" id="nav2" onclick="goPage(2)">✏️ 주사 기록</button><button class="tab" id="nav4" onclick="goPage(4)">⚖️ 몸무게</button><button class="tab" id="nav3" onclick="goPage(3)">📊 내 기록</button><button class="tab" id="nav5" onclick="goPage(5)">💊 약물</button><button class="tab" id="nav6" onclick="goPage(6)">🔎 마운자로 정보</button><button class="tab" id="nav7" onclick="goPage(7)">💬 게시판</button></div>
+
+<div class="card" data-pg="3" hidden>
+<h2>요약</h2>
+<div class="grid" id="stats"></div>
+<div id="next" class="sub" style="margin-top:10px"></div>
+</div>
+
+<div class="card" data-pg="4" hidden>
+<h2>몸무게 기록</h2>
+<div class="row"><div><label>날짜</label><input id="wdate" type="date"></div><div><label>몸무게 (kg)</label><input id="wweight" type="number" step="0.1" placeholder="예: 72.4"></div></div>
+<label>몸 사진 (선택)</label>
+<input id="wfile" type="file" accept="image/*" onchange="pickPhoto(this)">
+<img id="wprev" hidden alt="미리보기">
+<button class="btn" onclick="addWeight()">몸무게 저장</button>
+</div>
+
+<div class="card" data-pg="4" hidden>
+<h2>몸무게 변화</h2>
+<div class="scroll" id="chart"></div>
+</div>
+
+<div class="card" data-pg="4" hidden>
+<h2>📸 몸매 변화 비교</h2>
+<div id="cmpEmpty" class="sub">몸무게를 기록할 때 사진을 함께 올리면 시간에 따른 몸매 변화를 나란히 비교할 수 있어요.</div>
+<div id="cmpBox" hidden>
+<div class="row"><figure class="fig"><img id="cimg1" alt="처음 사진"><figcaption id="ccap1"></figcaption></figure><figure class="fig"><img id="cimg2" alt="선택한 사진"><figcaption id="ccap2"></figcaption></figure></div>
+<input type="range" id="cslide" min="0" max="0" value="0" oninput="showCmp()">
+<div class="sub" id="cdiff" style="text-align:center;margin-top:6px"></div>
+</div>
+<div class="sub" style="margin-top:10px">사진은 이 기기의 브라우저에만 저장되며 외부로 전송되지 않습니다.</div>
+</div>
+
+<div class="card" data-pg="4" hidden>
+<h2>몸무게 기록 목록</h2>
+<div id="wlist"></div>
+</div>
+
+<div class="card" data-pg="5" hidden>
+<h2>약물 알아보기</h2>
+<div class="tabs"><button class="tab on" id="tab-w" onclick="showInfo('w')">위고비</button><button class="tab" id="tab-m" onclick="showInfo('m')">마운자로</button></div>
+<div class="info" id="info"></div>
+<h3 style="font-size:14px;margin:16px 0 6px">한눈에 비교</h3>
+<div class="scroll"><table><tr><th></th><th>위고비</th><th>마운자로</th></tr>
+<tr><th>성분</th><td>세마글루타이드</td><td>티르제파타이드</td></tr>
+<tr><th>작용</th><td>GLP-1 수용체</td><td>GIP + GLP-1 이중 수용체</td></tr>
+<tr><th>제조사</th><td>노보 노디스크</td><td>일라이 릴리</td></tr>
+<tr><th>투여</th><td>주 1회 피하주사</td><td>주 1회 피하주사</td></tr>
+<tr><th>용량 단계</th><td>0.25 → 0.5 → 1.0 → 1.7 → 2.4mg</td><td>2.5 → 5 → 7.5 → 10 → 12.5 → 15mg</td></tr>
+</table></div>
+<div class="warnbox">⚠️ 일반적인 참고 정보입니다. 두 약 모두 전문의약품이므로 용량, 증량 시기, 놓친 투여 대처는 반드시 처방 의료진과 제품 설명서의 안내를 따르세요.</div>
+</div>
+
+<div class="card" data-pg="2">
+<h2>내 목표 설정</h2>
+<div class="row">
+<div><label>시작 몸무게 (kg)</label><input id="startW" type="number" step="0.1"></div>
+<div><label>목표 몸무게 (kg)</label><input id="goalW" type="number" step="0.1"></div>
+</div>
+<button class="btn" onclick="saveSettings()">저장</button>
+</div>
+
+<div class="card" data-pg="2">
+<h2>새 기록 추가</h2>
+<label>날짜</label><input id="date" type="date">
+<div class="row">
+<div><label>약물</label><select id="drug" onchange="fillDoses()"><option>위고비</option><option>마운자로</option><option>주사 안 맞음</option></select></div>
+<div><label>용량 (mg)</label><select id="dose"></select></div>
+</div>
+<label>주사 부위</label>
+<select id="site"><option>복부</option><option>허벅지</option><option>상완</option></select>
+<label>부작용 (해당하는 것 모두)</label>
+<div class="chips" id="se"></div>
+<label>부작용 정도 (1 약함 ~ 5 심함)</label>
+<select id="sev"><option value="0">없음</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+<label>메모</label>
+<textarea id="memo" rows="2" placeholder="식사량, 컨디션, 운동 등"></textarea>
+<button class="btn" onclick="addEntry()">기록하기</button>
+</div>
+
+<div class="card" data-pg="3" hidden>
+<h2>기록 목록</h2>
+<div id="list"></div>
+</div>
+
+<div class="card" data-pg="6" hidden>
+<h2>▶️ 유튜브에서 찾아보기</h2>
+<div class="sub">버튼을 누르면 유튜브 검색 결과가 새 창으로 열려요.</div>
+<div id="ytlinks"></div>
+</div>
+
+<div class="card" data-pg="6" hidden>
+<h2>🗺️ 나만의 닥터 마운자로 지도</h2>
+<div class="sub">마운자로 처방·진료 병원을 지도에서 찾고, 다녀온 병원은 나만의 목록으로 저장하세요. 처방 가능 여부와 비용은 병원에 직접 확인하세요.</div>
+<div id="maplinks"></div>
+<h3 style="font-size:14px;margin:18px 0 0">내 병원 저장</h3>
+<label>병원명</label><input id="cname" maxlength="30" placeholder="예: OO의원">
+<label>지역 / 주소</label><input id="caddr" maxlength="60" placeholder="예: 고양시 일산동구">
+<label>메모 (담당 선생님, 비용, 느낀 점 등)</label><textarea id="cmemo" rows="2" maxlength="200"></textarea>
+<button class="btn" onclick="addClinic()">병원 저장</button>
+<div id="clist" style="margin-top:12px"></div>
+</div>
+
+<div class="card" data-pg="6" hidden>
+<h2>🔗 믿을 수 있는 정보 사이트</h2>
+<a class="lk" href="https://nedrug.mfds.go.kr" target="_blank" rel="noopener noreferrer">식약처 의약품안전나라<span>허가사항·안전 정보 ↗</span></a>
+<a class="lk" href="https://www.kosso.or.kr" target="_blank" rel="noopener noreferrer">대한비만학회<span>비만 진료 정보 ↗</span></a>
+</div>
+
+<div class="card" data-pg="6" hidden>
+<h2>❓ 자주 묻는 질문</h2>
+<details><summary>마운자로는 어떻게 맞나요?</summary><p>주 1회, 같은 요일에 복부·허벅지·상완 중 한 곳에 피하주사합니다. 식사와 관계없이 투여할 수 있고, 주사 부위는 돌아가며 바꾸는 것이 좋아요.</p></details>
+<details><summary>메스꺼움이 심할 때는?</summary><p>소량씩 천천히 먹고, 기름지고 자극적인 음식과 과식을 피하며 수분을 충분히 마셔 보세요. 증상이 심하거나 오래가면 의료진과 상담하세요.</p></details>
+<details><summary>주사 맞는 날을 놓쳤어요</summary><p>놓친 투여를 언제까지 맞을 수 있는지는 제품 설명서와 처방 의료진의 안내를 따르세요. 임의로 두 번 맞지 마세요.</p></details>
+<details><summary>먹는 피임약을 복용 중이에요</summary><p>마운자로가 먹는 피임약의 효과에 영향을 줄 수 있다고 알려져 있어요. 시작·증량 시기의 보조 피임 여부는 의료진과 상담하세요.</p></details>
+<details><summary>근손실을 줄이려면?</summary><p>단백질을 충분히 먹고 근력운동을 병행하면 도움이 됩니다. 구체적인 목표량은 의료진이나 영양사와 정하세요.</p></details>
+<details><summary>약을 끊으면 어떻게 되나요?</summary><p>중단 후 체중이 다시 늘 수 있는 것으로 알려져 있어요. 중단이나 감량 계획은 반드시 의료진과 함께 정하세요.</p></details>
+</div>
+
+<div class="card" data-pg="7" hidden>
+<h2>💬 소통 게시판</h2>
+<div class="sub" id="bnote">후기, 질문, 꿀팁을 자유롭게 나눠요. 개인정보와 광고는 올리지 마세요. 글은 개인 경험이며 의학적 조언이 아닙니다.</div>
+<div id="bform">
+<label>분류</label><select id="bcat"><option>자유</option><option>후기</option><option>질문</option><option>꿀팁</option></select>
+<label>제목</label><input id="btitle" maxlength="60">
+<label>내용</label><textarea id="bbody" rows="3" maxlength="800"></textarea>
+<button class="btn" onclick="addPost()">글쓰기</button>
+</div>
+</div>
+
+<div class="card" data-pg="7" hidden>
+<h2>게시글</h2>
+<div id="blist"><div class="sub">불러오는 중…</div></div>
+</div>
+
+<p class="note">이 앱은 기록용이며 의학적 조언이 아닙니다. 지속적인 구토, 심한 복통, 탈수 증상 등이 있으면 즉시 의료진과 상담하세요.<br>데이터는 이 기기의 브라우저에만 저장됩니다.</p>
+</main>
+<script>
+const DOSES={"위고비":["0.25","0.5","1.0","1.7","2.4"],"마운자로":["2.5","5","7.5","10","12.5","15"],"주사 안 맞음":["-"]};
+const SES=["메스꺼움","구토","변비","설사","복부팽만","식욕저하","피로","두통","어지러움","주사부위 반응","역류","탈모"];
+let S={start:"",goal:"",entries:[]},picked=new Set();
+const $=id=>document.getElementById(id);
+function load(){try{const r=localStorage.getItem("glp1-log");if(r)S=JSON.parse(r)}catch(e){}}
+function save(){try{localStorage.setItem("glp1-log",JSON.stringify(S))}catch(e){alert("저장 공간이 부족합니다. 오래된 사진 기록을 삭제해 주세요.")}}
+function fillDoses(){$("dose").innerHTML=DOSES[$("drug").value].map(d=>`<option>${d}</option>`).join("")}
+function toggle(el,n){picked.has(n)?picked.delete(n):picked.add(n);el.classList.toggle("on")}
+function saveSettings(){S.start=$("startW").value;S.goal=$("goalW").value;save();render();alert("목표가 저장되었습니다")}
+function addEntry(){
+ const date=$("date").value;if(!date){alert("날짜를 선택해 주세요");return}
+ const w=NaN;
+ S.entries.push({id:Date.now(),date,w:isNaN(w)?null:w,drug:$("drug").value,dose:$("dose").value,site:$("site").value,se:[...picked],sev:+$("sev").value,memo:$("memo").value.trim()});
+ S.entries.sort((a,b)=>a.date<b.date?-1:1);save();
+ picked.clear();document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
+ $("memo").value="";$("sev").value="0";render();goPage(3);
+}
+function del(id){if(confirm("이 기록을 삭제할까요?")){S.entries=S.entries.filter(e=>e.id!==id);save();render()}}
+function fmt(d){const x=new Date(d+"T00:00:00");return `${x.getMonth()+1}월 ${x.getDate()}일`}
+function render(){
+ const ws=allW();
+ const cur=ws.length?ws[ws.length-1].w:null;
+ const st=parseFloat(S.start)||(ws.length?ws[0].w:null);
+ const goal=parseFloat(S.goal);
+ const diff=cur!=null&&st!=null?(cur-st):null;
+ const left=cur!=null&&!isNaN(goal)?(cur-goal):null;
+ const shots=S.entries.filter(e=>e.drug!=="주사 안 맞음").length;
+ $("stats").innerHTML=[
+  ["현재 몸무게",cur!=null?cur.toFixed(1)+"kg":"-"],
+  ["총 변화",diff!=null?(diff>0?"+":"")+diff.toFixed(1)+"kg":"-"],
+  ["목표까지",left!=null?(left<=0?"달성 🎉":left.toFixed(1)+"kg"):"-"],
+  ["총 주사 횟수",shots+"회"]
+ ].map(([a,b])=>`<div class="stat"><b>${b}</b><span>${a}</span></div>`).join("");
+ const inj=S.entries.filter(e=>e.drug!=="주사 안 맞음");
+ if(inj.length){const l=inj[inj.length-1],d=new Date(l.date+"T00:00:00");d.setDate(d.getDate()+7);
+  const days=Math.ceil((d-new Date(new Date().toDateString()))/864e5);
+  $("next").textContent=`다음 주사 예정: ${d.getMonth()+1}월 ${d.getDate()}일 (${days>0?days+"일 후":days===0?"오늘":Math.abs(days)+"일 지남"}) · 마지막 ${l.drug} ${l.dose}mg`}
+ else $("next").textContent="첫 기록을 추가해 보세요.";
+ chart(ws,goal);renderW();
+ $("list").innerHTML=S.entries.length?[...S.entries].reverse().map(e=>`<div class="item">
+  <div style="display:flex;justify-content:space-between"><b>${fmt(e.date)}${e.w!=null?" · "+e.w.toFixed(1)+"kg":""}</b><button class="ghost" onclick="del(${e.id})">삭제</button></div>
+  <span class="tag">${e.drug}${e.drug!=="주사 안 맞음"?" "+e.dose+"mg · "+e.site:""}</span>
+  ${e.se.map(s=>`<span class="tag se">${s}</span>`).join("")}${e.sev?`<span class="tag se">정도 ${e.sev}/5</span>`:""}
+  ${e.memo?`<div class="sub">${e.memo.replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]))}</div>`:""}</div>`).join(""):'<div class="sub">아직 기록이 없습니다.</div>';
+}
+function chart(ws,goal){
+ if(ws.length<2){$("chart").innerHTML='<div class="sub">몸무게 기록이 2개 이상 쌓이면 그래프가 표시됩니다.</div>';return}
+ const W=Math.max(560,ws.length*50),H=200,p=34;
+ let vals=ws.map(e=>e.w);if(!isNaN(goal))vals.push(goal);
+ const mn=Math.min(...vals)-1,mx=Math.max(...vals)+1;
+ const x=i=>p+i*(W-p*2)/(ws.length-1),y=v=>H-p-(v-mn)/(mx-mn)*(H-p*2);
+ const pts=ws.map((e,i)=>`${x(i)},${y(e.w)}`).join(" ");
+ let g=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="몸무게 그래프">`;
+ if(!isNaN(goal))g+=`<line x1="${p}" x2="${W-p}" y1="${y(goal)}" y2="${y(goal)}" stroke="var(--sub)" stroke-dasharray="4"/><text x="${W-p}" y="${y(goal)-4}" font-size="11" text-anchor="end" fill="var(--sub)">목표 ${goal}</text>`;
+ g+=`<polyline points="${pts}" fill="none" stroke="var(--pri)" stroke-width="2.5"/>`;
+ ws.forEach((e,i)=>{g+=`<circle cx="${x(i)}" cy="${y(e.w)}" r="4" fill="var(--pri)"/><text x="${x(i)}" y="${y(e.w)-9}" font-size="11" text-anchor="middle" fill="var(--tx)">${e.w}</text><text x="${x(i)}" y="${H-10}" font-size="10" text-anchor="middle" fill="var(--sub)">${fmt(e.date)}</text>`});
+ $("chart").innerHTML=g+"</svg>";
+}
+load();
+const INFO={
+w:{t:"위고비 (Wegovy)",p:"세마글루타이드 성분의 GLP-1 계열 비만 치료제입니다. 식욕을 줄이고 포만감을 오래 유지하게 도와 체중 감량에 사용됩니다.",u:["주 1회, 같은 요일에 복부·허벅지·상완에 피하주사","0.25mg으로 시작해 보통 4주 간격으로 단계적으로 증량 (유지 용량 최대 2.4mg)","식사와 관계없이 투여 가능"],s:["흔한 부작용: 메스꺼움, 구토, 설사, 변비, 복통, 피로","증량 직후 증상이 심해지는 경우가 많고 대개 시간이 지나며 완화됩니다."],c:["갑상선 수질암 병력·가족력, 다발성 내분비샘종양 2형(MEN2)이 있는 경우 사용 불가","임신 중이거나 임신 계획이 있는 경우 사용 불가","췌장염, 담낭질환 병력이 있다면 의료진과 상담"],k:"냉장(2~8℃) 보관, 얼리지 않기. 개봉 전후 보관 가능 기간은 제품 설명서를 확인하세요."},
+m:{t:"마운자로 (Mounjaro)",p:"티르제파타이드 성분으로 GIP와 GLP-1 두 호르몬 수용체에 함께 작용하는 이중 작용제입니다. 식욕 억제와 혈당 조절에 도움을 주며, 체중 감량 효과가 큰 편으로 알려져 있습니다.",u:["주 1회, 같은 요일에 복부·허벅지·상완에 피하주사","2.5mg으로 시작해 4주 후 5mg, 이후 필요에 따라 4주 이상 간격으로 2.5mg씩 증량 (최대 15mg)","식사와 관계없이 투여 가능"],s:["흔한 부작용: 메스꺼움, 설사, 구토, 변비, 소화불량, 복통, 주사부위 반응","증량 시기에 위장 증상이 두드러질 수 있습니다."],c:["갑상선 수질암 병력·가족력, 다발성 내분비샘종양 2형(MEN2)이 있는 경우 사용 불가","임신 중이거나 임신 계획이 있는 경우 사용 불가","먹는 피임약 효과가 떨어질 수 있어 시작·증량 시 의료진과 상담","당뇨약(인슐린, 설포닐우레아)과 병용하면 저혈당 위험"],k:"냉장(2~8℃) 보관, 얼리지 않기. 개봉 전후 보관 가능 기간은 제품 설명서를 확인하세요."}};
+function showInfo(k){const d=INFO[k],l=a=>"<ul>"+a.map(x=>`<li>${x}</li>`).join("")+"</ul>";
+ $("tab-w").classList.toggle("on",k==="w");$("tab-m").classList.toggle("on",k==="m");
+ $("info").innerHTML=`<p><b>${d.t}</b></p><p class="sub" style="margin-top:4px">${d.p}</p><h3>투여 방법</h3>${l(d.u)}<h3>흔한 부작용</h3>${l(d.s)}<h3>주의가 필요한 경우</h3>${l(d.c)}<h3>보관</h3><p>${d.k}</p><div class="warnbox">🚨 심한 복통(특히 등으로 퍼지는 통증), 지속적인 구토, 심한 탈수, 눈·피부 노래짐, 심한 알레르기 반응이 있으면 즉시 병원에 가세요.</div>`}
+showInfo("w");
+$("se").innerHTML=SES.map(s=>`<span class="chip" onclick="toggle(this,'${s}')">${s}</span>`).join("");
+$("date").value=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const q=encodeURIComponent,YT=['마운자로 주사 방법','마운자로 부작용 관리','마운자로 식단','마운자로 후기 변화','위고비 마운자로 차이','GLP-1 근손실 운동'];
+const lk=(u,t,s)=>`<a class="lk" href="${u}" target="_blank" rel="noopener noreferrer">${t}<span>${s} ↗</span></a>`;
+const mapUrls=s=>[['네이버 지도','https://map.naver.com/p/search/'+q(s)],['카카오맵','https://map.kakao.com/?q='+q(s)],['구글 지도','https://www.google.com/maps/search/'+q(s)]];
+function renderInfo(){
+ $('ytlinks').innerHTML=YT.map(t=>lk('https://www.youtube.com/results?search_query='+q(t),'🔎 '+esc(t),'YouTube')).join('');
+ $('maplinks').innerHTML=mapUrls('마운자로 처방 병원').map(m=>lk(m[1],'📍 '+m[0]+'에서 병원 찾기','열기')).join('');
+ const cl=S.clinics||[];
+ $('clist').innerHTML=cl.length?cl.map(c=>`<div class="item"><div style="display:flex;justify-content:space-between"><b>${esc(c.name)}</b><button class="ghost" onclick="delClinic(${c.id})">삭제</button></div><div class="sub">${esc(c.addr)}</div>${c.memo?`<div style="font-size:13px">${esc(c.memo)}</div>`:''}<div style="margin-top:6px">${mapUrls(c.name+' '+c.addr).map(m=>`<a class="tag" style="text-decoration:none;color:var(--tx)" href="${m[1]}" target="_blank" rel="noopener noreferrer">${m[0]} ↗</a>`).join('')}</div></div>`).join(''):'<div class="sub" style="margin-top:8px">저장한 병원이 아직 없어요.</div>'}
+function addClinic(){const n=$('cname').value.trim();if(!n){alert('병원명을 입력해 주세요');return}
+ S.clinics=S.clinics||[];S.clinics.push({id:Date.now(),name:n,addr:$('caddr').value.trim(),memo:$('cmemo').value.trim()});save();
+ $('cname').value='';$('caddr').value='';$('cmemo').value='';renderInfo()}
+function delClinic(id){if(confirm('이 병원을 목록에서 삭제할까요?')){S.clinics=S.clinics.filter(c=>c.id!==id);save();renderInfo()}}
+let DB=null,UID=null,CAN=true,posts=[],cmts=[];const drafts={},openP=new Set();
+const ago=t=>new Date(t).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit'});
+function boardOff(m){$('bform').hidden=true;$('blist').innerHTML='<div class="sub">'+(m||'이 환경에서는 게시판을 사용할 수 없어요. 공유된 링크로 로그인한 상태에서 열어 주세요.')+'</div>'}
+async function initBoard(){try{const c=window.claude;if(!c){boardOff();return}
+ const u=await c.use('user');DB=await c.use('db');if(!DB){boardOff();return}
+ if(u){UID=await u.id();CAN=(await u.can('data.write'))!==false}
+ $('bform').hidden=!CAN;if(!CAN)$('bnote').textContent='보기 전용 권한이라 글을 읽을 수만 있어요.';
+ DB.collection('posts').onSnapshot(s=>{posts=s.docs.map(d=>Object.assign({id:d.id},d.data()));renderBoard()},()=>boardOff());
+ DB.collection('comments').onSnapshot(s=>{cmts=s.docs.map(d=>Object.assign({id:d.id},d.data()));renderBoard()},()=>{});
+ }catch(e){boardOff()}}
+function renderBoard(){
+ const a=document.activeElement;if(a&&a.classList&&a.classList.contains('cin'))return;
+ const ps=[...posts].sort((x,y)=>y.ts-x.ts);
+ $('blist').innerHTML=ps.length?ps.map(p=>{const cs=cmts.filter(c=>c.pid===p.id).sort((x,y)=>x.ts-y.ts),o=openP.has(p.id);
+ return `<div class="post"><span class="tag">${esc(p.cat)}</span><h3>${esc(p.title)}</h3><div style="font-size:14px;white-space:pre-wrap">${esc(p.body)}</div><div class="sub" style="margin-top:4px">${esc(p.nick)} · ${ago(p.ts)}${p.uid&&p.uid===UID?` · <button class="ghost" onclick="delPost('${p.id}')">삭제</button>`:''}</div><button class="lnk" onclick="togC('${p.id}')">💬 댓글 ${cs.length}개 ${o?'접기':'보기'}</button>${o?cs.map(c=>`<div class="cm"><b>${esc(c.nick)}</b> <span class="sub">${ago(c.ts)}</span>${c.uid&&c.uid===UID?` <button class="ghost" onclick="delCm('${c.id}')">삭제</button>`:''}<div style="white-space:pre-wrap">${esc(c.body)}</div></div>`).join('')+(CAN?`<div style="display:flex;gap:6px;margin-top:8px"><input class="cin" id="ci-${p.id}" maxlength="200" placeholder="댓글 쓰기" value="${esc(drafts[p.id]||'')}" oninput="drafts['${p.id}']=this.value"><button class="tab" style="flex:0 0 auto;padding:0 14px" onclick="addCm('${p.id}')">등록</button></div>`:''):''}</div>`}).join(''):'<div class="sub">아직 글이 없어요. 첫 글을 남겨 보세요!</div>'}
+function togC(id){openP.has(id)?openP.delete(id):openP.add(id);renderBoard()}
+async function addPost(){const t=$('btitle').value.trim(),b=$('bbody').value.trim();
+ if(!t||!b){alert('제목과 내용을 입력해 주세요');return}
+ try{await DB.collection('posts').add({uid:UID,nick:S.nick||'익명',cat:$('bcat').value,title:t,body:b,ts:Date.now()});$('btitle').value='';$('bbody').value=''}
+ catch(e){alert('글을 등록할 수 없어요 ('+((e&&e.code)||'오류')+')')}}
+async function addCm(pid){const el=$('ci-'+pid),t=(el&&el.value||'').trim();if(!t)return;
+ try{await DB.collection('comments').add({pid:pid,uid:UID,nick:S.nick||'익명',body:t,ts:Date.now()});drafts[pid]='';el.value='';el.blur();renderBoard()}
+ catch(e){alert('댓글을 등록할 수 없어요 ('+((e&&e.code)||'오류')+')')}}
+async function delPost(id){if(!confirm('이 글을 삭제할까요?'))return;
+ try{for(const c of cmts.filter(c=>c.pid===id))await DB.doc('comments/'+c.id).delete();await DB.doc('posts/'+id).delete()}catch(e){alert('삭제할 수 없어요')}}
+async function delCm(id){if(!confirm('이 댓글을 삭제할까요?'))return;try{await DB.doc('comments/'+id).delete()}catch(e){alert('삭제할 수 없어요')}}
+let wphoto="";
+function allW(){const a=S.entries.filter(e=>e.w!=null).map(e=>({date:e.date,w:e.w}));(S.weights||[]).forEach(x=>a.push({date:x.date,w:x.w}));return a.sort((p,q)=>p.date<q.date?-1:p.date>q.date?1:0)}
+function pickPhoto(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);wphoto=c.toDataURL("image/jpeg",.72);$("wprev").src=wphoto;$("wprev").hidden=false};im.src=r.result};r.readAsDataURL(f)}
+function addWeight(){const d=$("wdate").value,w=parseFloat($("wweight").value);
+ if(!d||isNaN(w)){alert("날짜와 몸무게를 입력해 주세요");return}
+ S.weights=S.weights||[];S.weights.push({id:Date.now(),date:d,w:w,photo:wphoto});
+ S.weights.sort((a,b)=>a.date<b.date?-1:1);save();
+ wphoto="";$("wprev").hidden=true;$("wprev").removeAttribute("src");$("wfile").value="";$("wweight").value="";render()}
+function delW(id){if(confirm("이 몸무게 기록을 삭제할까요?")){S.weights=S.weights.filter(x=>x.id!==id);save();render()}}
+function showCmp(){const ph=(S.weights||[]).filter(x=>x.photo);if(!ph.length)return;
+ const a=ph[0],b=ph[+$("cslide").value]||ph[ph.length-1];
+ $("cimg1").src=a.photo;$("ccap1").textContent="처음 · "+fmt(a.date)+" · "+a.w+"kg";
+ $("cimg2").src=b.photo;$("ccap2").textContent=fmt(b.date)+" · "+b.w+"kg";
+ const d=b.w-a.w;$("cdiff").textContent=ph.length>1?"처음 대비 "+(d>0?"+":"")+d.toFixed(1)+"kg · 슬라이더로 사진을 넘겨보세요":"사진을 1장 더 올리면 비교할 수 있어요"}
+function renderW(){const ws=S.weights||[],ph=ws.filter(x=>x.photo);
+ $("wlist").innerHTML=ws.length?[...ws].reverse().map(x=>`<div class="item" style="display:flex;gap:10px;align-items:center">${x.photo?`<img class="thumb" src="${x.photo}" alt="">`:""}<div style="flex:1"><b>${x.w.toFixed(1)}kg</b><div class="sub">${fmt(x.date)}</div></div><button class="ghost" onclick="delW(${x.id})">삭제</button></div>`).join(""):'<div class="sub">아직 몸무게 기록이 없습니다.</div>';
+ $("cmpEmpty").hidden=ph.length>0;$("cmpBox").hidden=!ph.length;
+ if(ph.length){$("cslide").max=ph.length-1;$("cslide").value=ph.length-1;$("cslide").hidden=ph.length<2;showCmp()}}
+let pick="";
+function pickDrug(d){pick=d;document.querySelectorAll(".dcard").forEach(c=>c.classList.toggle("on",c.dataset.d===d))}
+function enter(){const n=$("nick").value.trim();
+ if(!n){alert("닉네임을 입력해 주세요");$("nick").focus();return}
+ if(!pick){alert("투약 중인 주사를 선택해 주세요");return}
+ S.nick=n;S.myDrug=pick;save();openApp()}
+function openApp(){$("landing").hidden=true;$("app").hidden=false;
+ $("hello").textContent="💉 "+S.nick+"님의 기록장";$("hsub").textContent=S.myDrug+" 사용 중";
+ $("drug").value=S.myDrug;fillDoses();showInfo(S.myDrug==="마운자로"?"m":"w");render();goPage(2)}
+function goPage(n){document.querySelectorAll("[data-pg]").forEach(e=>e.hidden=e.dataset.pg!=n);$("nav2").classList.toggle("on",n==2);$("nav3").classList.toggle("on",n==3);$("nav4").classList.toggle("on",n==4);$("nav5").classList.toggle("on",n==5);$("nav6").classList.toggle("on",n==6);$("nav7").classList.toggle("on",n==7);window.scrollTo(0,0)}
+function logout(){$("app").hidden=true;$("landing").hidden=false;$("nick").value=S.nick||"";window.scrollTo(0,0)}
+$("nick").addEventListener("keydown",e=>{if(e.key==="Enter")enter()});
+$("nick").value=S.nick||"";if(S.myDrug)pickDrug(S.myDrug);$("wdate").value=$("date").value;
+$("startW").value=S.start;$("goalW").value=S.goal;fillDoses();render();renderInfo();initBoard();
+</script>
+</body>
+</html>
